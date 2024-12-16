@@ -15,20 +15,26 @@ const (
 	ErrorDecodingResponse = "error decoding response"
 )
 
-var link string = "http://localhost:3700/send"
+var url string = "http://localhost:3700/send"
 
 type LoggerApi struct {
 	client *http.Client
 	id     int64
 	token  string
+	url    string
 }
 
-func New(token string, id int64) *LoggerApi {
+func NewWithUrl(token string, id int64, url string) *LoggerApi {
 	return &LoggerApi{
 		client: http.DefaultClient,
 		id:     id,
 		token:  token,
+		url:    url,
 	}
+}
+
+func New(token string, id int64) *LoggerApi {
+	return NewWithUrl(token, id, url)
 }
 
 func (l *LoggerApi) GetId() int64 {
@@ -46,7 +52,7 @@ func (l *LoggerApi) Write(p []byte) (n int, err error) {
 		return 0, vanerrors.NewWrap(ErrorMarshaling, err, vanerrors.EmptyHandler)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, link, bytes.NewBuffer(body))
+	req, err := http.NewRequest(http.MethodPost, l.url, bytes.NewBuffer(body))
 	if err != nil {
 		return 0, vanerrors.NewWrap(ErrorCreatingRequest, err, vanerrors.EmptyHandler)
 	}
