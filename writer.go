@@ -15,7 +15,7 @@ const (
 	ErrorDecodingResponse = "error decoding response"
 )
 
-var url string = "http://localhost:3700/api"
+var url string = "http://147.78.67.201:3700/api"
 
 type LoggerApi struct {
 	client *http.Client
